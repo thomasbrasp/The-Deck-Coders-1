@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/account.css" />
+    <link rel="stylesheet" href="../css/dark-mode.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+    />
+    <script type="module" src="../javascript/profile.js"></script>
+    <link rel="icon" type="image/jpg" href="../assets/images/favicon.jpg">
+  </head>
+  <body class="light-mode">
+    <%- include("partials/nav") %>
+    <section class="account-settings">
+      <i class="bi bi-cloud-sun-fill top-right-icon" id="toggle-mode"></i>
+      <form action="/update-account" method="post">
+        <h1 class="title">Account instellingen</h1>
+
+        <figure class="profile-image">
+          <a class="change-picture-button">
+            <img
+              class="image"
+              src="<%=user.imageUrl%>"
+              alt="Temp"
+            />
+          </a>
+        </figure>
+        <input type="hidden" name="profile_picture" id="profile_picture" value="<%=user.imageUrl%>">
+        <dialog class="profiel-fotos-modal">
+          <article class="profiel-fotos">
+            <h1 class="title">Kies een profielfoto!</h1>
+            <section class="profile-options">
+              <%for (const image of pfp) {%>
+                <%if (user.level >= image.level) {%>
+                  <section class="picture-wrapper">
+                    <img class="picture-option" src="<%=image.image_url%>"/>
+                  </section>
+                <%} else {%>
+                  <section class="picture-wrapper">
+                    <img class="picture-option locked" src="<%=image.image_url%>"/>
+                    <i class="bi bi-lock-fill lock-overlay"><%=image.level%></i>
+                  </section>
+                <%}%>
+              <%}%>
+            </section>
+          </article>
+        </dialog>
+
+        <section class="skill-bar">
+          <h1 class="skill-current-level">Level <%=user.level%> | Hobbit</h1>
+          <article class="skill-container">
+            <span <% /* eslint-disable css-propertyvalueexpected */ %> class="skill-level skill" style="width: <%= Math.floor((user.exp / user.requiredExp) * 100) %>%">
+                  <%= Math.floor((user.exp / user.requiredExp) * 100) %>%
+            </span>
+          </article>
+        </section>
+        <% if (error) {%>
+          <i class="bi bi-exclamation-circle-fill error-message"><%= error %></i>
+        <%}%>
+        <section class="information">
+          <article class="input-container">
+            <input type="text" name="username" value="<%=user.username%>" required/>
+            <i class="bi bi-person-fill input-icon"></i>
+          </article>
+
+          <article class="input-container">
+            <input type="email" value="<%=user.email%>" name="email" required/>
+            <i class="bi bi-mailbox2 input-icon"></i>
+          </article>
+
+          <article class="input-container">
+            <input type="password" placeholder="vul (nieuw) wachtwoord in" name="password"/>
+            <i class="bi bi-shield-lock-fill input-icon"></i>
+          </article>
+
+          <article class="input-container">
+            <input type="password" placeholder="herhaal wachtwoord" name="repeated_password"/>
+            <i class="bi bi-shield-lock-fill input-icon"></i>
+          </article>
+
+        </section>
+
+        <button type="submit" class="submit-btn">UPDATE</button>
+      </form>
+      <form action="/logout" method="post">
+        <button type="submit" class="submit-btn">UITLOGGEN</button>
+      </form>
+    </section>
+    <%- include("partials/footer") %>
